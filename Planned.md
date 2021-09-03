@@ -60,48 +60,26 @@ but something like (2..6:= n => n + 2 ) => 4 -> 5 -> 6 -> 7
 ### Void
 `void`
 
-
-### Generics
-Generics are not a high priority, but they're planned
-```
-struct<T, U, ..> <id> { }
-
-fn<T, U, ..> <id>() -> T { }
-```
-
-Generics are restricted to only what Traits are in the Scope
-```
-// does not work
-fn<T> add(x: T, y: T) -> T {
-    x + y
-}
-
-// works
-fn<T: Add> add(x: T, y: T) -> T {
-    x + y
-}
-```
-
 ### Math
 TODO: std: Complex, Quaternion, Matrix
 
 ## Punctuation
 ### Operators
-| Normal | Wrapping | Assign | WrapAssign |
-|:------:|:--------:|:------:|:----------:|
-|    +   |    +%    |   +=   |     +%=    |
-|    -   |    -%    |   -=   |     -%=    |
-|    *   |    *%    |   *=   |     *%=    |
-|    ^   |    ^%    |   ^=   |     ^%=    |
-|    ^^  |    ^^%   |   ^^=  |     ^^%=   |
-|    /   |          |   /=   |            |
-|    %   |          |   %=   |            |
+| Normal | Wrapping | Assign | WrapAssign | Description     |
+|:------:|:--------:|:------:|:----------:|:----------------:
+|    +   |    +%    |   +=   |     +%=    | Addition        |
+|    -   |    -%    |   -=   |     -%=    | Subtraction     |
+|    *   |    *%    |   *=   |     *%=    | Multiplication  |
+|    ^   |    ^%    |   ^=   |     ^%=    | Exponentiation  |
+|    ^^  |    ^^%   |   ^^=  |     ^^%=   | Tetration       |
+|    /   |          |   /=   |            | Division        |
+|    %   |          |   %=   |            | Modulo          |
 
 ### Bitwise
-| LShift | RShift | And  | Or  | Not | Nand | Nor  |  Xor  |  Xnor  |
-|:------:|:------:|:----:|:---:|:---:|:----:|:----:|:-----:|:------:|
-|   <<   |   >>   |  &   | \|  |  ~  |  ~&  | ~\|  |   #   |   ~#   |
-|   <<=  |   >>=  |  &=  | \|= |  ~= |  ~&= | ~\|= |   #=  |   ~#=  |
+| LShift | RShift | And  | Or  | Not | Nand | Nor  |  Xor  |  Xnor  | Description  |
+|:------:|:------:|:----:|:---:|:---:|:----:|:----:|:-----:|:------:|:-------------:
+|   <<   |   >>   |  &   | \|  |  ~  |  ~&  | ~\|  |   #   |   ~#   | Normal       |
+|   <<=  |   >>=  |  &=  | \|= |  ~= |  ~&= | ~\|= |   #=  |   ~#=  | Assign       |
 
 ### Logical
 | And |  Or   | Not (unary) | Nand |  Nor  |  Xor  |  Xnor  |
@@ -124,6 +102,18 @@ Arrays:
 !@> contains (> 1)            [5, 3, 2] !@> [2, 8, 4, 11, 7] => false
 ```
 
+### Other
+```
+.                   Field Acess
+..                  Range
+..(value):=         Range with Step
+,                   Separator
+:                   Separator (<id>: T)
+->                  Return Type of Function
+=>                  Match
+
+```
+
 
 ## Control FLow
 ### If
@@ -135,6 +125,24 @@ if <expr> { } else { }
 if <expr> { } else if <expr> { }
 
 if <expr> { } else if <expr> { } else { }
+```
+
+### Match
+```
+match <expr> {
+    <match_expr> => <expr>,
+    ...
+}
+
+<match_expr> :=
+    value               value
+    variance            e.g Enum
+    ..                  full range match
+    <from>..            from range
+    ..<to>              to range
+    <from>..<to>        from - to range
+    <cond>              condition (low priority)
+    _   
 ```
 
 ### For
@@ -172,9 +180,7 @@ are scoped and can be created almost everywhere but not accessed.
 pub keyword does not work inside functions
 ```
 fn <id>() {}                function (void)
-pub fn <id>() {}            public function (void)
 fn <id>() -> T {}           function (returns T)
-pub fn <id>() -> T {}       public function (returns T)
 ```
 
 ### Structs
@@ -183,14 +189,63 @@ are scoped and can be created almost everywhere but not accessed.
 pub keyword does not work inside functions
 ```
 struct <id> { }             struct
-pub struct <id> { }         public struct
+```
+
+#### Declaration of "methods"
+```
+impl <id of struct> {
+    (pub) fn <id>() { }
+    ...
+}
 ```
 
 ### Consts and Variables
 #### Declaration
 ```
+// unmutable
 let <id> = <expr>              const with infered Type
 let <id>: T = <expr>           const with given Type
+// mutable
 var <id> = <expr>              variable with infered Type
 var <id>: T = <expr>           variable with given Type
+
+// Todo: statics?
+```
+
+## Traits
+- Traits are a set of functionality that can be implemented for structs
+- Traits can depend on each other
+- Traits can be generic, although this feature is not a priority
+```
+trait<T> <id> { 
+    fn <id>() -> T;
+}
+
+trait <id>: <id of other trait>, ... { }
+```
+
+## Generics
+Generics are not a high priority, but they're planned
+```
+struct<T, U, ..> <id> { }
+
+fn<T, U, ..> <id>() -> T { }
+
+impl<T, U> <id of struct> {
+    fn(x: T, y: U) -> T { }
+    fn<V>(x: V) -> U { }
+}
+```
+
+Generics are restricted to only what Traits are in the Scope
+```
+// does not work
+fn<T> add(x: T, y: T) -> T {
+    x + y
+}
+
+// works
+fn<T: Add> add(x: T, y: T) -> T {
+    x + y
+}
 ```
