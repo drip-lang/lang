@@ -20,8 +20,11 @@
 `char   => '<value>'  `
 
 ### Arrays & Slices
-Array: `[T; usize]`
-Slice: `[T]`
+Array: `[usize]T`
+Slice: `[]T`
+
+#### Multi Dimensional Arrays
+`[usize][usize][usize]T  // 3-dim array`
 
 #### Array & Slice Ranges
 ```
@@ -30,32 +33,19 @@ Slice: `[T]`
 [<from>..<end>]     sub-range from <from> until <end>
 
 example
-let x = [4, 6, 8, 11]
-let y = x[1..]
-y == [6, 8, 11]
+x := [4, 6, 8, 11]
+y := x[1..]
+y = [6, 8, 11]
 ```
 
 ### References and Pointer
 | Reference | Pointer  |
 |:---------:|:--------:|
-|   &T      |  *T      |
-|   &mut T  |  *mut T  |
+|   &T      |  ^T      |
+|   &mut T  |  ^mut T  |
 
 ### Optional
 `?T => None / <value: T>`
-
-### Ranges
-```
-(..)                full range
-(<from>..)          sub-range from <from> (inclusive) until end of range
-(<from>..<end>)     sub-range from <from> until <end> (exlusive)
-```
-ranges can also have a custom step expression.
-this step expression will firstly be implemented as constants e.g. i32
-but something like (2..6:= n => n + 2 ) => 4 -> 5 -> 6 -> 7 
-```
-(..:=<expr>)
-```
 
 ### Void
 `void`
@@ -63,28 +53,28 @@ but something like (2..6:= n => n + 2 ) => 4 -> 5 -> 6 -> 7
 ### Math
 TODO: std: Complex, Quaternion, Matrix
 
-## Punctuation
+## Punctuation & Keywords
 ### Operators
 | Normal | Wrapping | Assign | WrapAssign | Description     |
 |:------:|:--------:|:------:|:----------:|:----------------:
-|    +   |    +%    |   +=   |     +%=    | Addition        |
-|    -   |    -%    |   -=   |     -%=    | Subtraction     |
-|    *   |    *%    |   *=   |     *%=    | Multiplication  |
-|    ^   |    ^%    |   ^=   |     ^%=    | Exponentiation  |
-|    ^^  |    ^^%   |   ^^=  |     ^^%=   | Tetration       |
-|    /   |          |   /=   |            | Division        |
-|    %   |          |   %=   |            | Modulo          |
+|   +    |    +%    |   +=   |     +%=    | Addition        |
+|   -    |    -%    |   -=   |     -%=    | Subtraction     |
+|   *    |    *%    |   *=   |     *%=    | Multiplication  |
+|   ^    |    ^%    |   ^=   |     ^%=    | Exponentiation  |
+|   ^^   |    ^^%   |   ^^=  |     ^^%=   | Tetration       |
+|   /    |          |   /=   |            | Division        |
+|   %    |          |   %=   |            | Modulo          |
 
-### Bitwise
+### Bit
 | LShift | RShift | And  | Or  | Not | Nand | Nor  |  Xor  |  Xnor  | Description  |
 |:------:|:------:|:----:|:---:|:---:|:----:|:----:|:-----:|:------:|:-------------:
-|   <<   |   >>   |  &   | \|  |  ~  |  ~&  | ~\|  |   #   |   ~#   | Normal       |
-|   <<=  |   >>=  |  &=  | \|= |  ~= |  ~&= | ~\|= |   #=  |   ~#=  | Assign       |
+|   <<   |   >>   |  &   | \|  |  ~  |  ~&  | ~\|  |  \|>  |  ~\|>  |   Normal     |
+|   <<=  |   >>=  |  &=  | \|= |  ~= |  ~&= | ~\|= |  \|>= |  ~\|>= |   Assign     |
 
 ### Logical
 | And |  Or   | Not (unary) | Nand |  Nor  |  Xor  |  Xnor  |
 |:---:|:-----:|:-----------:|:----:|:-----:|:-----:|:------:|
-| &&  | \|\|  |      !      | !&&  | !\|\| |  ##   |  !##   |
+| &&  | \|\|  |      !      | !&&  | !\|\| | \|\|> |  !\|>  |
 
 ### Comparison
 ```
@@ -93,27 +83,60 @@ TODO: std: Complex, Quaternion, Matrix
 ==  equal
 >=  greater or equal
 <=  less or equal
+```
 
-Arrays:
-|>  contains (all)            [3, 2] |> [4, 3, 2, 6]    => true
-!|> not contains (all)        [5, 3, 2] !|> [2, 8, 4, 11, 7] => false
-
-@> contains (at least 1)      [5, 3, 2] @> [2, 8, 4, 11, 7] => true
-!@> contains (> 1)            [5, 3, 2] !@> [2, 8, 4, 11, 7] => false
+### Ranges
+```
+(..)                full range
+(<from>..)          sub-range from <from> (inclusive) until end of range
+(..<end>)           sub-range from start until <end> (exclusive) until end of range
+(<from>..<end>)     sub-range from <from> until <end> (exlusive)
+```
+ranges can also have a custom step expression.
+this step expression will firstly be implemented as constants e.g. i32
+but something like (2..6= n => n + 2 ) => 4 -> 5 -> 6 -> 7
+```
+(..=<expr>)
 ```
 
 ### Other
 ```
 .                   Field Acess
 ..                  Range
-..(value):=         Range with Step
+..=(value)          Range with Step
+( )                 Block (functions)
+{ }                 Block (scope)
+[ ]                 Block (slices, access)
 ,                   Separator
 :                   Separator (<id>: T)
+::                  Statement (const)
+:=                  Statement (variable)
 ->                  Return Type of Function
-=>                  Match
-
+=>                  Match Arm
+#                   Compiler Annotations
+#[<comp_expr>]      Compiler Annotations
+// todo
 ```
 
+### Keywords
+```
+struct
+trait
+use
+if
+else
+match
+for
+in
+while
+loop
+dyn
+return
+true
+false
+None
+Some
+```
 
 ## Control FLow
 ### If
@@ -122,9 +145,9 @@ if <expr> { }
 
 if <expr> { } else { }
 
-if <expr> { } else if <expr> { }
+if <expr> { } else <expr> { }
 
-if <expr> { } else if <expr> { } else { }
+if <expr> { } else <expr> { } else { }
 ```
 
 ### Match
@@ -137,12 +160,8 @@ match <expr> {
 <match_expr> :=
     value               value
     variance            e.g Enum
-    ..                  full range match
-    <from>..            from range
-    ..<to>              to range
-    <from>..<to>        from - to range
-    <cond>              condition (low priority)
-    _   
+    <from>..<to>        range expression
+    _                   No Match / matches all
 ```
 
 ### For
@@ -161,15 +180,6 @@ for <id>, <usize> in <expr> { }
 ```
 // running as long as <cond> == true
 while <cond> { }
-
-// starts when <cond1> == true, 
-// continues as long as <cond2> == true
-while <cond1>, <cond2> { }
-
-// starts when <cond1> == true
-// continues as long as <cond2> == true
-// terminates when <cond3> == true
-while <cond1>, <cond2>, <cond3> { }
 ```
 
 
@@ -177,25 +187,45 @@ while <cond1>, <cond2>, <cond3> { }
 ### Functions
 #### Declaration
 are scoped and can be created almost everywhere but not accessed.
-pub keyword does not work inside functions
 ```
-fn <id>() {}                function (void)
-fn <id>() -> T {}           function (returns T)
+<id> :: () {}                   function (void)
+<id> :: () -> T {}              function (returns T)
+<id> :: () -> (T, U) {}         function (returns T, U)
 ```
+
+Functions return the last expression automatically.
+To return earlier, `return <expr>` may be used
 
 ### Structs
 #### Declaration
 are scoped and can be created almost everywhere but not accessed.
-pub keyword does not work inside functions
+Fields can optionally be separated via `,` but whitespaces of any type would be sufficient
 ```
-struct <id> { }             struct
+<id> :: struct { }              struct
+
+// example
+<id> :: stuct {
+    x, y, z: i32
+}
+
+<id> :: struct {
+    x: i32
+    y: i32
+    z: {
+        s: i32
+        u: i32
+    }
+}
 ```
 
 #### Declaration of "methods"
 ```
-impl <id of struct> {
-    (pub) fn <id>() { }
-    ...
+<id> :: impl {
+    <id> :: () {} 
+}
+
+<id struct> <| <id trait> :: impl { 
+    <trait fn id> :: () {} 
 }
 ```
 
@@ -203,11 +233,11 @@ impl <id of struct> {
 #### Declaration
 ```
 // unmutable
-let <id> = <expr>              const with infered Type
-let <id>: T = <expr>           const with given Type
+<id> :: <expr>              const with "infered" Type
+<id>: T :: <expr>           const with Type T
 // mutable
-var <id> = <expr>              variable with infered Type
-var <id>: T = <expr>           variable with given Type
+<id> := <expr>               variable with infered Type
+<id>: T := <expr>            variable with given Type
 
 // Todo: statics?
 ```
@@ -217,35 +247,12 @@ var <id>: T = <expr>           variable with given Type
 - Traits can depend on each other
 - Traits can be generic, although this feature is not a priority
 ```
-trait<T> <id> { 
-    fn <id>() -> T;
+<id> :: trait { 
+    <id> :: () -> T;
 }
 
-trait <id>: <id of other trait>, ... { }
+<id> :: trait <| <id of other trait> + ... { }
 ```
 
 ## Generics
-Generics are not a high priority, but they're planned
-```
-struct<T, U, ..> <id> { }
-
-fn<T, U, ..> <id>() -> T { }
-
-impl<T, U> <id of struct> {
-    fn(x: T, y: U) -> T { }
-    fn<V>(x: V) -> U { }
-}
-```
-
-Generics are restricted to only what Traits are in the Scope
-```
-// does not work
-fn<T> add(x: T, y: T) -> T {
-    x + y
-}
-
-// works
-fn<T: Add> add(x: T, y: T) -> T {
-    x + y
-}
-```
+Todo
